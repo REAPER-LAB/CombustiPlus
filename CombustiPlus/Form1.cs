@@ -32,9 +32,35 @@ namespace CombustiPlus
 
             cmbCombustible.SelectedIndex = 0;
             cmbPago.SelectedIndex = 0;
+
+
         }
+
+        private bool Validar()
+        {
+            if (txtPlaca.Text.Trim().Length != 7)
+            {
+                MessageBox.Show("La placa debe tener 7 caracteres.\nEjemplo: A123456",
+                                "Placa inválida",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtPlaca.Focus();
+                return false;
+            }
+
+            if (nudGalones.Value <= 0)
+            {
+                MessageBox.Show("Los galones deben ser más de 0.",
+                                "Galones inválidos",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                nudGalones.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
     }
 
-
+    
 }
 
