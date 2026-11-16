@@ -2,6 +2,7 @@ namespace CombustiPlus
 {
     public partial class Form1 : Form
     {
+        private List<Despacho> despachos = new List<Despacho>();
         public Form1()
         {
             InitializeComponent();
@@ -25,7 +26,7 @@ namespace CombustiPlus
         }
 
         private void cmbCombustible_SelectedIndexChanged(object sender, EventArgs e)
-     
+
         {
             InitializeComponent();
 
@@ -98,8 +99,56 @@ namespace CombustiPlus
             return total;
         }
 
+
+        private void ActualizarResumen()
+        {
+            int cantidad = despachos.Count;
+            decimal totalVendido = 0;
+            decimal galonesTotales = 0;
+            Despacho mayor = null;
+
+            foreach (Despacho d in despachos)
+            {
+                totalVendido += d.Total;
+                galonesTotales += d.Galones;
+
+                if (mayor == null || d.Total > mayor.Total)
+                    mayor = d;
+            }
+
+            if (mayor == null)
+            {
+                lblResumen.Text = "Sin despachos todavía.";
+                return;
+            }
+
+            lblResumen.Text = $"{cantidad} despachos · Vendido RD$ {totalVendido:N2} · " +
+                              $"Galones {galonesTotales:0.0} · " +
+                              $"Mayor: #{mayor.Numero:00} {mayor.Placa} (RD$ {mayor.Total:N2})";
+        }
+
+        private void btnDespachar_Click(object sender, EventArgs e)
+        {
+            if (!Validar()) return;
+
+            decimal total = Math.Round(Calcular(), 2);
+
+            Despacho d = new Despacho
+            {
+                Numero = despachos.Count + 1,
+                Placa = txtPlaca.Text.Trim(),
+                Combustible = cmbCombustible.SelectedItem.ToString(),
+                Galones = nudGalones.Value,
+                Pago = cmbPago.SelectedItem.ToString(),
+                Total = total
+            };
+
+            despachos.Add(d);
+            lstDespacho.Items.Add(d.ToString());
+
+            ActualizarResumen();
+        }
     }
 
-    
 }
 
